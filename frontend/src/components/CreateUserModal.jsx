@@ -19,7 +19,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { BiAddToQueue } from 'react-icons/bi';
-export const BASE_URL = "http://127.0.0.1:5000/api"
+import { BASE_URL } from "../App";
 
 const CreateUserModal = ({ setUsers }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -44,72 +44,59 @@ const CreateUserModal = ({ setUsers }) => {
         },
         body: JSON.stringify(inputs),
       });
-
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error);
+        throw new Error("Failed to create user");
       }
-
+      const newUser = await res.json();
+      setUsers((prevUsers) => [...prevUsers, newUser]);
       toast({
-        status: "success 😇",
-        title: "Yayy",
-        description: "Friend created successfully",
-        duration: 2000,
-        position: "top-center",
+        title: "User created.",
+        description: "The user has been created successfully.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
       });
       onClose();
-      setUsers((prevUsers) => [...prevUsers,data]);
-      setInputs({
-        name: "",
-        role: "",
-        description: "",
-        gender: "",
-      });
     } catch (error) {
+      console.error(error);
       toast({
+        title: "Error",
+        description: "Failed to create user.",
         status: "error",
-        title: "An error occurred",
-        description: error.message,
-        duration: 4000,
-        position: "top-center",
+        duration: 5000,
+        isClosable: true,
       });
     } finally {
       setIsLoading(false);
- 
     }
   };
 
   return (
     <>
-      <Button onClick={onOpen}>
-        <BiAddToQueue size={20} />
+      <Button leftIcon={<BiAddToQueue />} colorScheme="teal" onClick={onOpen}>
+        Add User
       </Button>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <form onSubmit={handleCreateUser}>
           <ModalContent>
-            <ModalHeader>Friendz Entry 🤓</ModalHeader>
+            <ModalHeader>Create User</ModalHeader>
             <ModalCloseButton />
-            <ModalBody pb={6}>
-              <Flex alignItems={"center"} gap={4}>
-                <FormControl>
-                  <FormLabel>Full Name</FormLabel>
-                  <Input
-                    placeholder='Cardo Dalisay'
-                    value={inputs.name}
-                    onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Role</FormLabel>
-                  <Input
-                    placeholder='Undying policeman'
-                    value={inputs.role}
-                    onChange={(e) => setInputs({ ...inputs, role: e.target.value })}
-                  />
-                </FormControl>
-              </Flex>
+            <ModalBody>
+              <FormControl>
+                <FormLabel>Name</FormLabel>
+                <Input
+                  value={inputs.name}
+                  onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
+                />
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel>Role</FormLabel>
+                <Input
+                  value={inputs.role}
+                  onChange={(e) => setInputs({ ...inputs, role: e.target.value })}
+                />
+              </FormControl>
               <FormControl mt={4}>
                 <FormLabel>Description</FormLabel>
                 <Textarea
@@ -122,8 +109,8 @@ const CreateUserModal = ({ setUsers }) => {
               </FormControl>
               <RadioGroup mt={4} value={inputs.gender} onChange={(value) => setInputs({ ...inputs, gender: value })}>
                 <Flex gap={5}>
-                  <Radio value='male' onChange = {(e) => setInputs ({...inputs,gender: e.target.value})}>Male</Radio>
-                  <Radio value='female' onChange = {(e) => setInputs ({...inputs,gender: e.target.value})}>Female</Radio>
+                  <Radio value='male'>Male</Radio>
+                  <Radio value='female'>Female</Radio>
                 </Flex>
               </RadioGroup>
             </ModalBody>

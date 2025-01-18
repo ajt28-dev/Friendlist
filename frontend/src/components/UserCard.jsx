@@ -2,7 +2,7 @@ import { Avatar, Box, Card, CardBody, CardHeader, Flex, Heading, IconButton, Tex
 import React from 'react';
 import { BiTrash } from 'react-icons/bi';
 import EditModal from './EditModal';
-import { BASE_URL } from './CreateUserModal';
+import { BASE_URL } from "../App"; // Correct import
 
 const UserCard = ({ user, setUsers }) => {
   const toast = useToast();
@@ -37,36 +37,23 @@ const UserCard = ({ user, setUsers }) => {
   return (
     <Card>
       <CardHeader>
-        <Flex spacing={"4"}>
-          <Flex flex={"1"} gap={"4"} alignItems="center">
-            <Avatar src={user.imgUrl} />
-
-            <Box>
-              <Heading size='sm'>{user.name}</Heading>
-              <Text>{user.role}</Text>
-            </Box>
-          </Flex>
-
+        <Flex justifyContent="space-between" alignItems="center">
+          <Heading size="md">{user.name}</Heading>
           <Flex>
-            <EditModal
-            user={user}
-            setUsers={setUsers}
-            />
+            <EditModal user={user} setUsers={setUsers} />
             <IconButton
-              variant='ghost'
-              colorScheme='red'
-              size='sm'
-              aria-label='Delete user'
-              icon={<BiTrash size={20} />}
+              icon={<BiTrash />}
               onClick={handleDeleteUser}
+              colorScheme="red"
+              ml={2}
             />
           </Flex>
         </Flex>
       </CardHeader>
       <CardBody>
-        <Text>
-          {user.description}
-        </Text>
+        <Avatar src={user.imgUrl} size="xl" />
+        <Text mt={4}>{user.role}</Text>
+        <Text>{user.description}</Text>
       </CardBody>
     </Card>
   );

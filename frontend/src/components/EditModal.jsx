@@ -16,7 +16,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { BiEditAlt } from 'react-icons/bi';
-import { BASE_URL } from './CreateUserModal';
+import { BASE_URL } from "../App";
 
 const EditModal = ({ user, setUsers }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
